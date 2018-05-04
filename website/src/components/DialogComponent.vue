@@ -1,0 +1,42 @@
+<template>
+    <el-dialog
+        title='登录/注册'
+        :visible.sync='dialogVisible'
+        width='60%'>
+        <component :is='currentView'></component>
+        <span slot='footer' class='dialog-footer'>
+            <el-button @click='dialogVisible = false'>取消</el-button>
+            <el-button type='primary' @click='dialogVisible = false'>确定</el-button>
+        </span>
+    </el-dialog>
+</template>
+
+<script>
+import PubSub from 'pubsub-js'
+
+export default {
+    data () {
+        return {
+            dialogVisible: false,
+            currentView: null
+        }
+    },
+    created () {
+       this.loginSuccessSub = PubSub.subscribe('loginSuccess', (topic, message) => {
+            this.hideDialog()
+        })
+    },
+    methods: {
+        showDialog (view) {
+            this.currentView = view
+            this.dialogVisible = true
+        },
+        hideDialog () {
+            this.dialogVisible = false
+        }
+    },
+    beforeDestroy () {
+        this.loginSuccessSub && PubSub.unsubscribe(this.loginSuccessSub)
+    }
+}
+</script>
