@@ -1,0 +1,69 @@
+1.表结构:
+create table petinfos(
+id bigint not null auto_increment primary key,
+uid bigint not null,
+nicheng varchar(60) not null,
+pettype int not null,
+petsort varchar(60) not null,
+sex tinyint not null,
+age int not null,
+introduce varchar(360),
+petimg varchar(120),
+updtime timestamp not null,
+createtime timestamp not null
+)ENGINE=innodb DEFAULT CHARSET=utf8;
+
+2.models/PetinfoModel.js
+var Sequelize = require('sequelize'); 
+var sequelize =require('./ModelHeader');
+
+var PetinfoModel = sequelize.define('petinfos', {
+	id: {type:Sequelize.BIGINT,primaryKey: true},
+	uid: Sequelize.BIGINT,
+    nicheng: Sequelize.STRING,
+    pettype: Sequelize.INTEGER,
+    petsort: Sequelize.STRING,
+    sex: Sequelize.TEXT('tiny'),
+    age: Sequelize.INTEGER,
+    introduce: Sequelize.STRING,
+    petimg: Sequelize.STRING,
+    updtime:Sequelize.DATE,
+    createtime:Sequelize.DATE
+},{
+		timestamps: false,
+		//paranoid: true  //获取不到id的返回值
+	});
+
+module.exports = PetinfoModel;
+
+3.PetService.js中
+
+async subpetInfo(ctx){
+    	let loginbean = ctx.session.loginbean;
+    	let form = new formidable.IncomingForm();   //创建上传表单
+	    form.encoding = 'utf-8';        //设置编辑
+	    form.uploadDir = './public/images/petimgs';     //设置上传目录 文件会自动保存在这里
+	    form.keepExtensions = true;     //保留后缀
+	    form.maxFieldsSize = 5 * 1024 * 1024 ;   //文件大小5M
+	    let fields = await new Promise(function(resolve,reject){
+	    	form.parse(ctx.req, function (err, fields, files) {
+		        if(err){
+		            console.log(err);
+		            resolve(0);
+		            return;
+		        }
+		        if(files.petimgFile.size>0){
+		        	fields.petimg=files.petimg.path.replace('public','');
+		        	resolve(fields);
+		        }else{
+		        	fields.petimg='';
+		        	resolve(fields);
+		        }
+	    	})
+
+	    });
+	    fields.uid = loginbean.id;
+	    fields.createtime=new Date();
+	    let rs = await PetinfoModel.create(fields);
+	    ctx.body=rs;
+    }

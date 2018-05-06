@@ -35,23 +35,23 @@
                 <div class='mainContent'>
                     <div class='basicInfo'>
                         <div class='left'>
-                            <el-input placeholder='请输入宠物昵称' v-model='nickname' clearable></el-input>
-                            <el-select v-model='petType' clearable placeholder='请输入宠物类型'>
+                            <el-input placeholder='请输入宠物昵称' v-model='petInfo.nickname' clearable></el-input>
+                            <el-select v-model='petInfo.petType' clearable placeholder='请输入宠物类型'>
                                 <el-option
-                                    v-for='type in petTypes'
+                                    v-for='type in petInfo.petTypes'
                                     :key='type.value'
                                     :label='type.label'
                                     :value='type.value'></el-option>
                             </el-select>
-                            <el-input placeholder='请输入宠物品种' v-model='petBreed' clearable></el-input>
+                            <el-input placeholder='请输入宠物品种' v-model='petInfo.petBreed' clearable></el-input>
                             <div class='sex'>
-                                <el-radio v-model='sex' label='male'>雄</el-radio>
-                                <el-radio v-model='sex' label='female'>雌</el-radio>
+                                <el-radio v-model='petInfo.sex' label='male'>雄</el-radio>
+                                <el-radio v-model='petInfo.sex' label='female'>雌</el-radio>
                             </div>
-                            <el-input placeholder='请输入宠物年龄' v-model='age' clearable></el-input>
+                            <el-input placeholder='请输入宠物年龄' v-model='petInfo.age' clearable></el-input>
                         </div>
                         <div class='right'>
-                            <vue-img-inputer v-model="petPhoto" theme="light" size="large"></vue-img-inputer>
+                            <vue-img-inputer v-model="petInfo.petPhoto" theme="light" size="large"></vue-img-inputer>
                         </div>
                     </div>
                     <div class='desc'>
@@ -59,10 +59,10 @@
                             type='textarea'
                             :rows="6"
                             placeholder='请输入宠物介绍信息'
-                            v-model='petIntroInfo'></el-input>
+                            v-model='petInfo.petIntroInfo'></el-input>
                     </div>
                     <div class='subBtn'>
-                        <el-button type="primary">提交信息</el-button>
+                        <el-button type="primary" @click='addPet(petInfo)'>提交信息</el-button>
                     </div>
                 </div>
             </el-col>
@@ -75,6 +75,9 @@
 import config from '../configs/config'
 import myAxios from '../common/myAxios'
 import vueImgInputer from 'vue-img-inputer'
+import { createNamespacedHelpers } from 'vuex'
+
+const { mapActions } = createNamespacedHelpers('petModule')
 
 export default {
     created () {
@@ -84,27 +87,34 @@ export default {
     },
     data () {
         return {
-            petTypes: [{
-                value: 'dog',
-                label: '狗'
-            }, {
-                value: 'cat',
-                label: '猫'
-            }, {
-                value: 'snake',
-                label: '蛇'
-            }],
-            sex: 'male',
-            nickname: '',
-            petType: '',
-            petBreed: '',
-            age: '',
-            petIntroInfo: '',
-            petPhoto: ''
+            petInfo: {
+                petTypes: [{
+                    value: 'dog',
+                    label: '狗'
+                }, {
+                    value: 'cat',
+                    label: '猫'
+                }, {
+                    value: 'snake',
+                    label: '蛇'
+                }],
+                sex: 'male',
+                nickname: '',
+                petType: '',
+                petBreed: '',
+                age: '',
+                petIntroInfo: '',
+                petPhoto: ''
+            }
         }
     },
     components: {
         'vue-img-inputer': vueImgInputer
+    },
+    methods: {
+        ...mapActions([
+            'addPet'
+        ])
     }
 }
 </script>
