@@ -32,6 +32,25 @@ class PetService {
         PetModel.create(fields)
         ctx.response.body = response
     }
+
+    /**
+     * 获取宠物信息
+     */
+    async getPets (ctx) {
+        const response = {
+            code: 0,
+            message: '',
+            data: null
+        }
+        
+        if (ctx.session.userBean) {
+            const petsInfo = await PetModel.findAll({where: { uid: ctx.session.userBean.id }})
+            response.data = petsInfo
+        } else {
+            response.message = '请先登录系统'
+        }
+        ctx.response.body = response
+    }
 }
 
 exports.service = PetService;

@@ -15,10 +15,20 @@
 import PubSub from 'pubsub-js'
 
 export default {
+    props: {
+        dialogVisibleProps: {
+            type: Boolean,
+            default: false
+        },
+        currentViewProps: {
+            type: Object,
+            default: null
+        }
+    },
     data () {
         return {
-            dialogVisible: false,
-            currentView: null
+            dialogVisible: this.dialogVisibleProps,
+            currentView: this.currentViewProps
         }
     },
     created () {
@@ -37,6 +47,14 @@ export default {
     },
     beforeDestroy () {
         this.loginSuccessSub && PubSub.unsubscribe(this.loginSuccessSub)
+    },
+    watch: {
+        dialogVisibleProps (newVal, oldVal) {
+            this.dialogVisible = newVal
+        },
+        currentViewProps (newVal, oldVal) {
+            this.currentView = newVal
+        }
     }
 }
 </script>
