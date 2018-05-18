@@ -29,7 +29,7 @@
                 v-model='petInfo.petIntroInfo'></el-input>
         </div>
         <div class='subBtn'>
-            <el-button type="primary" @click='addPet(petInfo)'>提交信息</el-button>
+            <el-button type="primary" @click='addPetInfo(petInfo)'>提交信息</el-button>
         </div>
     </div>
 </template>
@@ -37,6 +37,7 @@
 <script type='text/javascript'>
 import vueImgInputer from 'vue-img-inputer'
 import { createNamespacedHelpers } from 'vuex'
+import PubSub from 'pubsub-js'
 
 const { mapActions } = createNamespacedHelpers('petModule')
 
@@ -68,6 +69,10 @@ export default {
         'vue-img-inputer': vueImgInputer
     },
     methods: {
+        addPetInfo (petInfo) {
+            this.addPet(petInfo)
+            PubSub.publish('addPetInfoSucc')
+        },
         ...mapActions([
             'addPet'
         ])

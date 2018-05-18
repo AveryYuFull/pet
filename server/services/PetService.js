@@ -42,11 +42,57 @@ class PetService {
             message: '',
             data: null
         }
-        
+
         if (ctx.session.userBean) {
-            const petsInfo = await PetModel.findAll({where: { uid: ctx.session.userBean.id }})
-            response.data = petsInfo
+            const data = {}
+            let currentPage = 1
+            let pageSize = 3
+            ctx.request.query.currentPage && (currentPage = ctx.request.query.currentPage)
+            ctx.request.query.pageSize && (pageSize = ctx.request.query.pageSize)
+            data.totalCount = await PetModel.count({ where: { uid: ctx.session.userBean.id }})
+            data.petsInfo = await PetModel.findAll({where: { uid: ctx.session.userBean.id }, limit: parseInt(pageSize), offset: (currentPage - 1) * pageSize })
+            response.data = data
         } else {
+            response.message = '请先登录系统'
+        }
+        ctx.response.body = response
+    }
+
+    /**
+     * 获取宠物信息总量的接口
+     */
+    async getPetsCount (ctx) {
+        const response = {
+            code: 0,
+            message: '',
+            data: null
+        }
+
+        if (ctx.session.userBean) {
+            const data = {}
+            data.count = await PetModel.count({ where: {uid: ctx.session.userBean.id}})
+            response.data = data
+        } else {
+            response.message = '请先登录系统'
+        }
+        ctx.response.body  = response
+    }
+
+    /**
+     * 删除宠物信息
+     */
+    async deletePetInfo (ctx) {
+        const response = {
+            code: 0,
+            message: '',
+            success: true
+        }
+
+        if (ctx.session.userBean) {
+            const rs = await PetModel.destroy({where: {id: ctx.request.query.id, uid: ctx.session.userBean.id}})
+            response.success = rs && rs >= 1
+        } else {
+            response.success = false
             response.message = '请先登录系统'
         }
         ctx.response.body = response

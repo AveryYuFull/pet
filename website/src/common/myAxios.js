@@ -22,5 +22,15 @@ export default {
             }).catch (error => {
                 console.log(error)
             })
+    },
+
+    delete (url, callback, params = {}) {
+        axios.delete(stringUtil.queryToStr(URL_PREFIX + url, params))
+        .then (res => res.data)
+        .then (res => {
+            callback(res)
+        }).catch(error => {
+            console.log(error)
+        })
     }
 }

@@ -32,8 +32,8 @@
                 </el-menu>
             </el-col>
             <el-col :span='16'>
-                <pet-form v-if='!hasPetInfo'></pet-form>
-                <pet-info :data='petInfo' v-else></pet-info>
+                <pet-form v-if='petsInfoCount <= 0'></pet-form>
+                <pet-info :count='petsInfoCount' v-else></pet-info>
             </el-col>
             <el-col :span='2'>&nbsp;</el-col>
         </el-row>
@@ -45,23 +45,34 @@ import PetForm from '../components/PetForm'
 import PetInfo from '../components/PetInfo'
 import config from '../configs/config'
 import myAxios from '../common/myAxios'
+import PubSub from 'pubsub-js'
 
 export default {
     created () {
-        myAxios.get(config.GET_PETS, (res) => {
-            this.petInfo = res.data
-            this.hasPetInfo = res.data.length > 0
+        this.getPetsCount()
+
+        this.loginSuccessSub = PubSub.subscribe('loginSuccess', (topic, data) => {
+            this.getPetsCount()
         })
     },
     data () {
         return {
-            hasPetInfo: true,
-            petInfo: []
+            petsInfoCount: 0,
+        }
+    },
+    methods: {
+        getPetsCount () {
+            myAxios.get(config.GET_PETS_COUNT, (res) => {
+                this.petsInfoCount = res.data.count
+            })
         }
     },
     components: {
         'pet-form': PetForm,
         'pet-info': PetInfo
+    },
+    beforeDestroy () {
+        this.loginSuccessSub && PubSub.unsubscribe(this.loginSuccessSub)
     }
 }
 </script>
