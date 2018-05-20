@@ -42,27 +42,34 @@ import PubSub from 'pubsub-js'
 const { mapActions } = createNamespacedHelpers('petModule')
 
 export default {
+    props: {
+        viewData: {
+            type: Object, 
+            default: null
+        }
+    },
     data () {
         return {
-            petInfo: {
-                petTypes: [{
-                    value: 'dog',
-                    label: '狗'
-                }, {
-                    value: 'cat',
-                    label: '猫'
-                }, {
-                    value: 'snake',
-                    label: '蛇'
-                }],
-                sex: 'male',
-                nickname: '',
-                petType: '',
-                petBreed: '',
-                age: '',
-                petIntroInfo: '',
-                petPhoto: ''
-            }
+            petInfo: Object.assign({}, {
+                        petTypes: [{
+                            value: 'dog',
+                            label: '狗'
+                        }, {
+                            value: 'cat',
+                            label: '猫'
+                        }, {
+                            value: 'snake',
+                            label: '蛇'
+                        }],
+                        sex: 'male',
+                        nickname: '',
+                        petType: '',
+                        petBreed: '',
+                        age: '',
+                        petIntroInfo: '',
+                        petPhoto: '',
+                        id: 0
+                    }, this.viewData)
         }
     },
     components: {

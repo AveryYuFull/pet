@@ -8,6 +8,7 @@ const actions = {
     addPet ({ commit }, petInfo) {
         console.log('petInfo: ', petInfo)
         const data = new FormData()
+        data.append('id', petInfo.id)
         data.append('age', petInfo.age)
         data.append('sex', petInfo.sex)
         data.append('nickname', petInfo.nickname)

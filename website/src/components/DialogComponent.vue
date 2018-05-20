@@ -3,7 +3,7 @@
         title='登录/注册'
         :visible.sync='dialogVisible'
         width='60%'>
-        <component :is='currentView'></component>
+        <component :is='currentView' :viewData='viewData'></component>
         <span slot='footer' class='dialog-footer'>
             <el-button @click='dialogVisible = false'>取消</el-button>
             <el-button type='primary' @click='dialogVisible = false'>确定</el-button>
@@ -21,6 +21,10 @@ export default {
             default: false
         },
         currentViewProps: {
+            type: Object,
+            default: null
+        },
+        viewData : {
             type: Object,
             default: null
         }

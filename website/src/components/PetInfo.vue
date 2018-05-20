@@ -10,7 +10,7 @@
                     <div class='col petInfo' v-text='item.petIntroInfo'></div>
                     <div class='col operate'>
                         <div class='btn' @click='deletePetInfo(item.id)'>删除</div>
-                        <div class='btn'>更新</div>
+                        <div class='btn' @click='updatePetInfo(item)'>更新</div>
                     </div>
                 </div>
             </div>
@@ -19,7 +19,7 @@
                 <span class='addPetInfoBtn' @click='addPets'>添加宠物信息</span>
             </div>
         </div>
-        <dialog-component v-if='isShowDialog' :dialogVisibleProps='isShowDialog' :currentViewProps='petForm' />
+        <dialog-component v-if='isShowDialog' :dialogVisibleProps='isShowDialog' :currentViewProps='currentView' :viewData='viewData' />
     </div>
 </template>
 
@@ -42,7 +42,8 @@ export default {
     data () {
         return {
             isShowDialog: false,
-            petForm: PetForm,
+            currentView: null,
+            viewData: null,
             petInfo: {},
             pagination: {
                 currentPage: 1,
@@ -66,6 +67,7 @@ export default {
         },
         addPets () {
             this.isShowDialog = true
+            this.currentView = PetForm
         },
         /**
          * 当增加完宠物信息后，回调改方法
@@ -89,6 +91,11 @@ export default {
             myAxios.delete(config.DELETE_PET_INFO, (res) => {
                 res.success && this.getPetInfo()
             }, {id: id})
+        },
+        updatePetInfo (petInfo) {
+            this.isShowDialog = true
+            this.viewData = petInfo
+            this.currentView = PetForm
         }
     },
     beforeDestroy () {

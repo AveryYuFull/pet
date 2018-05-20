@@ -23,13 +23,24 @@ class PetService {
                     reslove(0)
                     return
                 }
-                fields.petPhoto = files.petPhoto.path.replace('public', '')
+
+                if (files.petPhoto) {
+                    fields.petPhoto = files.petPhoto.path.replace('public', '')
+                } else {
+                    fields.petPhoto = ''
+                }
+                
                 resolve(fields)
             })
         })
         fields.uid = userBean.id
-        fields.createdTime = new Date()
-        PetModel.create(fields)
+        fields.id = parseInt(fields.id)
+        if (!fields.id) {
+            fields.createdTime = new Date()
+            PetModel.create(fields)
+        } else {
+            PetModel.update(fields, {where: {id: fields.id, uid: fields.uid}})
+        }     
         ctx.response.body = response
     }
 
