@@ -37,6 +37,20 @@ const actions = {
                 alert(res.message)
             }
         }, data)
+    },
+    logout ({ commit }) {
+        myAxios.get(config.LOGOUT, (res) => {
+            res.success && commit(types.LOGIN, null)
+        })
+    },
+    checkSession ({commit, state}) {
+        if (!state.userInfo || JSON.stringify(state.userInfo) === '{}') {
+            myAxios.get(config.GET_SESSION, (res) => {
+                if (res.data && JSON.stringify(res.data) !== '{}') {
+                    commit(types.LOGIN, res.data)
+                }
+            })
+        }
     }
 }
 

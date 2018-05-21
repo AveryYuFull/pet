@@ -19,7 +19,7 @@
                     <li>寄养</li>
                     <li>医院</li>
                     <li>食物</li>
-                    <li>注销</li>
+                    <li><router-link to='/' @click.native='logout'>注销</router-link></li>
                 </ul>
             </div>
         </el-col>
@@ -31,7 +31,7 @@
 import LoginRegister from './LoginRegister'
 import { createNamespacedHelpers } from 'vuex'
 
-const { mapState } = createNamespacedHelpers('userModule')
+const { mapState, mapActions } = createNamespacedHelpers('userModule')
 
 export default {
     computed: {
@@ -42,10 +42,17 @@ export default {
             return this.userInfo && this.userInfo.id > 0
         }
     },
+    mounted () {
+        this.checkSession()
+    },
     methods: {
         loginAndRegister () {
             this.$parent.$refs.dialog.showDialog(LoginRegister)
-        }
+        },
+        ...mapActions([
+            'checkSession',
+            'logout'
+        ])
     }
 }
 </script>

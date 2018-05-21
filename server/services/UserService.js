@@ -55,6 +55,30 @@ class UserService {
         }
         ctx.response.body = response
     }
+
+    async getSession (ctx) {
+        const response = {
+            success: false,
+            message: '',
+            data: {}
+        }
+        response.data = ctx.session.userBean
+        ctx.response.body = response
+    }
+
+    async logout (ctx) {
+        const response = {
+            success: false
+        }
+
+        try {
+            delete ctx.session.userBean
+            response.success = true
+        } catch (err) {
+            response.success = false
+        }
+        ctx.response.body = response
+    }
 }
 
 exports.service = UserService;
